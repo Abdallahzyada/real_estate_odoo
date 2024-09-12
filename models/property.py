@@ -24,8 +24,10 @@ class Property(models.Model):
         ('west', 'West')],
         default='east'
     )
+    owner_id = fields.Many2one('owner')
 
     _sql_constraints = [('unique_name','unique("name")','This Name Already exists!')]
+
     @api.constrains('bedrooms')
     def check_bedrooms_greater_zero(self):
         for rec in self:
@@ -41,6 +43,18 @@ class Property(models.Model):
     #write
     @api.model
     def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
-        res = super(Property, self).search(domain, offset=0, limit=None, order=None, access_rights_uid=None)
+        res = super(Property, self)._search(domain, offset=0, limit=None, order=None, access_rights_uid=None)
+        #logic
+        return res
+
+    #update
+    def write(self, vals):
+        res = super(Property, self).write(vals)
+        #logic
+        return res
+
+    #delete
+    def unlink(self):
+        res = super(Property, self).unlink()
         #logic
         return res
