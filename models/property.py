@@ -25,6 +25,11 @@ class Property(models.Model):
         default='east'
     )
     owner_id = fields.Many2one('owner')
+    state = fields.Selection([
+        ('draft', "Draft"),
+        ('pending', 'Pending'),
+        ('sold', 'Sold')
+    ],default='draft')
 
     _sql_constraints = [('unique_name','unique("name")','This Name Already exists!')]
 
@@ -34,27 +39,40 @@ class Property(models.Model):
             if rec.bedrooms <= 0:
                 raise ValidationError('Please add a valid number of bedrooms!')
 
-    #create
-    @api.model_create_multi
-    def create(self, vals_list):
-        res = super(Property, self).create(vals_list)
-        #logic
-        return res
-    #write
-    @api.model
-    def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
-        res = super(Property, self)._search(domain, offset=0, limit=None, order=None, access_rights_uid=None)
-        #logic
-        return res
+    def action_draft(self):
+        for rec in self:
+            rec.state = 'draft'
 
-    #update
-    def write(self, vals):
-        res = super(Property, self).write(vals)
-        #logic
-        return res
+    def action_pending(self):
+        for rec in self:
+            rec.state = 'pending'
 
-    #delete
-    def unlink(self):
-        res = super(Property, self).unlink()
-        #logic
-        return res
+
+    def action_sold(self):
+        for rec in self:
+            rec.state = 'sold'
+
+    # #create
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     res = super(Property, self).create(vals_list)
+    #     #logic
+    #     return res
+    # #write
+    # @api.model
+    # def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
+    #     res = super(Property, self)._search(domain, offset=0, limit=None, order=None, access_rights_uid=None)
+    #     #logic
+    #     return res
+    #
+    # #update
+    # def write(self, vals):
+    #     res = super(Property, self).write(vals)
+    #     #logic
+    #     return res
+    #
+    # #delete
+    # def unlink(self):
+    #     res = super(Property, self).unlink()
+    #     #logic
+    #     return res
