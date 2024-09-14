@@ -11,6 +11,7 @@ class Property(models.Model):
     date_availability = fields.Date()
     expected_price = fields.Float()
     selling_price = fields.Float()
+    diff = fields.Float(compute="_compute_diff")
     bedrooms = fields.Integer()
     living_area = fields.Integer()
     facades = fields.Integer()
@@ -51,6 +52,19 @@ class Property(models.Model):
     def action_sold(self):
         for rec in self:
             rec.state = 'sold'
+
+    @api.depends('expected_price', 'selling_price')
+    def _compute_diff(self):
+        for rec in self:
+            rec.diff = rec.expected_price - rec.selling_price
+
+    @api.onchange('expected_price')
+    def _onchange_expected_price(self):
+        for rec in self:
+            if rec.expected_price <= 0:
+                return {
+                    'warning': {'title':'warning', 'message':'Negative Number'}
+                }
 
     # #create
     # @api.model_create_multi
