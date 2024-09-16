@@ -57,6 +57,8 @@
                                 <field name="garden_area"/>
                                 <field name="garden_orientation"/>
                                 <field name="owner_id"/>
+                                <field name="owner_address"/>
+                                <field name="owner_phone"/>
                             </group>
                             <group>
                                 <field name="description"/>f

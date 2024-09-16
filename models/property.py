@@ -26,6 +26,8 @@ class Property(models.Model):
         default='east'
     )
     owner_id = fields.Many2one('owner')
+    owner_address = fields.Char(related='owner_id.address')
+    owner_phone = fields.Char(related='owner_id.phone')
     state = fields.Selection([
         ('draft', "Draft"),
         ('pending', 'Pending'),
@@ -61,7 +63,7 @@ class Property(models.Model):
     @api.onchange('expected_price')
     def _onchange_expected_price(self):
         for rec in self:
-            if rec.expected_price <= 0:
+            if rec.expected_price < 0:
                 return {
                     'warning': {'title':'warning', 'message':'Negative Number'}
                 }
