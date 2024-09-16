@@ -4,13 +4,15 @@ from odoo.exceptions import ValidationError
 
 class Property(models.Model):
     _name = 'property'
+    _description = 'Property'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(required=1, )
+    name = fields.Char(required=1, tracking=1)
     description = fields.Text()
     post_code = fields.Char(required=1, size=6)
-    date_availability = fields.Date()
-    expected_price = fields.Float()
-    selling_price = fields.Float()
+    date_availability = fields.Date(tracking=1)
+    expected_price = fields.Float(tracking=1)
+    selling_price = fields.Float(tracking=1)
     diff = fields.Float(compute="_compute_diff")
     bedrooms = fields.Integer()
     living_area = fields.Integer()
@@ -23,9 +25,10 @@ class Property(models.Model):
         ('north', 'Nort'),
         ('south', 'South'),
         ('west', 'West')],
-        default='east'
+        default='east',
+        tracking=1
     )
-    owner_id = fields.Many2one('owner')
+    owner_id = fields.Many2one('owner', tracking=1)
     owner_address = fields.Char(related='owner_id.address')
     owner_phone = fields.Char(related='owner_id.phone')
     state = fields.Selection([
@@ -33,6 +36,8 @@ class Property(models.Model):
         ('pending', 'Pending'),
         ('sold', 'Sold')
     ],default='draft')
+
+    line_ids = fields.One2many('property.line', 'property_id')
 
     _sql_constraints = [('unique_name','unique("name")','This Name Already exists!')]
 
@@ -92,3 +97,11 @@ class Property(models.Model):
     #     res = super(Property, self).unlink()
     #     #logic
     #     return res
+
+
+class PropertyLine(models.Model):
+    _name = 'property.line'
+
+    area = fields.Float()
+    description = fields.Char()
+    property_id = fields.Many2one('property')

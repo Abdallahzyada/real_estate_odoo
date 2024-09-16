@@ -65,7 +65,23 @@
                             </group>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="bedrooms">
+                            <field name="line_ids">
+                                <tree editable="button">
+                                    <field name="property_id"/>
+                                    <field name="description"/>
+                                    <field name="area"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
