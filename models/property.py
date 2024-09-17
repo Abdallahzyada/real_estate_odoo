@@ -34,7 +34,8 @@ class Property(models.Model):
     state = fields.Selection([
         ('draft', "Draft"),
         ('pending', 'Pending'),
-        ('sold', 'Sold')
+        ('sold', 'Sold'),
+        ('close', 'Closed')
     ],default='draft')
 
     line_ids = fields.One2many('property.line', 'property_id')
@@ -60,6 +61,10 @@ class Property(models.Model):
     def action_sold(self):
         for rec in self:
             rec.state = 'sold'
+
+    def action_close(self):
+        for rec in self:
+            rec.state = 'close'
 
     @api.depends('expected_price', 'selling_price')
     def _compute_diff(self):
