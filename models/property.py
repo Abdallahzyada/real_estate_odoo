@@ -11,6 +11,7 @@ class Property(models.Model):
     description = fields.Text()
     post_code = fields.Char(required=1, size=6)
     date_availability = fields.Date(tracking=1)
+    expected_selling_date = fields.Date(tracking=1)
     expected_price = fields.Float(tracking=1)
     selling_price = fields.Float(tracking=1)
     diff = fields.Float(compute="_compute_diff")
@@ -40,6 +41,7 @@ class Property(models.Model):
 
     line_ids = fields.One2many('property.line', 'property_id')
     active = fields.Boolean(default=True)
+    is_late = fields.Boolean()
 
     _sql_constraints = [('unique_name','unique("name")','This Name Already exists!')]
 
@@ -78,6 +80,15 @@ class Property(models.Model):
                 return {
                     'warning': {'title':'warning', 'message':'Negative Number'}
                 }
+
+    def check_expected_selling_date(self):
+        property_ids = self.search([])
+        for rec in property_ids:
+            if rec.expected_selling_date and rec.expected_selling_date < fields.date.today():
+                if rec.state != 'sold' or rec.state !='close':
+                    rec.is_late = True
+
+
 
     # #create
     # @api.model_create_multi

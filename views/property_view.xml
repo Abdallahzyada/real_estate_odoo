@@ -3,7 +3,7 @@
         <field name="name">property tree view</field>
         <field name="model">property</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-danger="is_late">
                 <field name="name"/>
                 <field name="date_availability"/>
                 <field name="selling_price"/>
@@ -12,6 +12,7 @@
                 <field name="garden_area"/>
                 <field name="state"/>
                 <field name="living_area"/>
+                <field name="is_late" invisible="1"/>
                 <field name="bedrooms" optional="1"/>
                 <field name="garage" optional="1"/>
                 <field name="owner_id" optional="1"/>
@@ -44,6 +45,7 @@
                         <group>
                             <group string="General Info">
                                 <field name="date_availability"/>
+                                <field name="expected_selling_date"/>
                                 <field name="living_area"/>
                                 <field name="bedrooms"/>
                                 <field name="expected_price"/>
@@ -60,7 +62,8 @@
                                 <field name="owner_id"/>
                                 <field name="owner_address"/>
                                 <field name="owner_phone"/>
-                                <field name="active"/>
+                                <field name="active" invisible="1"/>
+                                <field name="is_late" invisible="1"/>
                             </group>
                             <group>
                                 <field name="description"/>f
@@ -104,6 +107,7 @@
             </search>
         </field>
     </record>
+
     <record id="property_action" model="ir.actions.act_window">
         <field name="name">property</field>
         <field name="res_model">property</field>
@@ -116,6 +120,17 @@
         <field name="code">
             action = records.action_close
         </field>
+    </record>
+
+    <record id="check_selling_date_cron" model="ir.cron">
+        <field name="name">Property: check selling date</field>
+        <field name="model_id" ref="model_property"/>
+        <field name="state">code</field>
+        <field name="code">model.check_expected_selling_date()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
     </record>
     <menuitem
     id="property_menu_item"
