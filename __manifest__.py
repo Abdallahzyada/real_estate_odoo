@@ -13,6 +13,7 @@
         'views/owner_view.xml',
         'views/sale_order_view.xml',
         'views/building_view.xml',
+        'reports/property_report.xml',
     ],
     'application': True
 }
