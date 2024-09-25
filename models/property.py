@@ -8,6 +8,7 @@ class Property(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(required=1, tracking=1)
+    ref = fields.Char(default='New', readonly='1')
     description = fields.Text()
     post_code = fields.Char(required=1, size=6)
     date_availability = fields.Date(tracking=1)
@@ -53,19 +54,23 @@ class Property(models.Model):
 
     def action_draft(self):
         for rec in self:
+            rec.create_history_record(rec.state, 'draft')
             rec.state = 'draft'
 
     def action_pending(self):
         for rec in self:
+            rec.create_history_record(rec.state, 'pending')
             rec.state = 'pending'
 
 
     def action_sold(self):
         for rec in self:
+            rec.create_history_record(rec.state, 'sold')
             rec.state = 'sold'
 
     def action_close(self):
         for rec in self:
+            rec.create_history_record(rec.state, 'close')
             rec.state = 'close'
 
     @api.depends('expected_price', 'selling_price')
@@ -89,13 +94,23 @@ class Property(models.Model):
                     rec.is_late = True
 
 
+    def create_history_record(self, old_state, new_state):
+        for rec in self:
+            rec.env['property.history'].create({
+                'user_id': rec.env.uid,
+                'property_id': rec.id,
+                'old_state': old_state,
+                'new_state': new_state
+            })
 
-    # #create
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #     res = super(Property, self).create(vals_list)
-    #     #logic
-    #     return res
+
+    #create
+    @api.model
+    def create(self, vals_list):
+        res = super(Property, self).create(vals_list)
+        if res.ref == 'New':
+            res.ref = self.env['ir.sequence'].next_by_code('property_seq')
+        return res
     # #write
     # @api.model
     # def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
