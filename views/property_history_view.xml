@@ -24,9 +24,10 @@
                                 <field name="user_id"/>
                                 <field name="property_id"/>
                             </group>
-                            <group string="Additional Info">
+                            <group>
                                 <field name="old_state"/>
                                 <field name="new_state"/>
+                                <field name="reason"/>
                             </group>
                         </group>
                     </group>
