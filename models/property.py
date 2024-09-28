@@ -9,13 +9,13 @@ class Property(models.Model):
 
     name = fields.Char(required=1, tracking=1)
     ref = fields.Char(default='New', readonly='1')
-    description = fields.Text()
+    description = fields.Text(groups="app_one.property_manager_group")
     post_code = fields.Char(required=1, size=6)
     date_availability = fields.Date(tracking=1)
     expected_selling_date = fields.Date(tracking=1)
     expected_price = fields.Float(tracking=1)
     selling_price = fields.Float(tracking=1)
-    diff = fields.Float(compute="_compute_diff")
+    diff = fields.Float(compute="_compute_diff", groups="app_one.property_manager_group")
     bedrooms = fields.Integer()
     living_area = fields.Integer()
     facades = fields.Integer()
@@ -94,7 +94,7 @@ class Property(models.Model):
                     rec.is_late = True
 
 
-    def create_history_record(self, old_state, new_state, reason):
+    def create_history_record(self, old_state, new_state, reason=""):
         for rec in self:
             rec.env['property.history'].create({
                 'user_id': rec.env.uid,

@@ -79,7 +79,7 @@
                             <field name="line_ids" readonly="state == 'close'">
                                 <tree editable="button">
                                     <field name="property_id"/>
-                                    <field name="description"/>
+                                    <field name="description" />
                                     <field name="area"/>
                                 </tree>
                             </field>
