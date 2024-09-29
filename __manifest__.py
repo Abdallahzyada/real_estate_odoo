@@ -19,5 +19,10 @@
         'wizard/change_state_wizard_view.xml',
         'reports/property_report.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'app_one/static/src/scss/assets.scss',
+        ],
+    },
     'application': True
 }

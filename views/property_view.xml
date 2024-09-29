@@ -26,6 +26,12 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <div name="button_box" class="oe_button_box" icon="fa-user">
+                        <button name="action_open_related_owner" type="object"
+                        invisible="not owner_id" string="Owner"/>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Sold" bg_color="text-bg-success" invisible="state != 'sold'"/>
                     <header>
                         <button name="action_draft" type="object" class="btn-primary" string="Draft"
                                 invisible="state in ('draft', 'close') "/>
